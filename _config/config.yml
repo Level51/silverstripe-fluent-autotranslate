@@ -1,0 +1,10 @@
+---
+Name: silverstripe-fluent-autotranslate
+---
+SilverStripe\Forms\TextField:
+  extensions:
+    - Level51\Autotranslate\AutotranslateFieldExtension
+
+SilverStripe\Forms\TextareaField:
+  extensions:
+    - Level51\Autotranslate\AutotranslateFieldExtension
