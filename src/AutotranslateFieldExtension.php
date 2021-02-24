@@ -9,14 +9,20 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\i18n\Data\Intl\IntlLocales;
+use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\View\Requirements;
+use TractorCow\Fluent\Extension\FluentExtension;
 use TractorCow\Fluent\Model\Locale;
 use TractorCow\Fluent\State\FluentState;
 
 class AutotranslateFieldExtension extends Extension
 {
     use Configurable;
+
+    /** @var string */
+    public const TRANSLATION_PROVIDER_GOOGLE = 'google';
 
     /**
      * @var DataObject|null The affected DataObject record
@@ -53,6 +59,10 @@ class AutotranslateFieldExtension extends Extension
         }
 
         if (!($record = $this->getAutotranslateRecord())) {
+            return false;
+        }
+
+        if (!$record->hasExtension(FluentExtension::class)) {
             return false;
         }
 
@@ -126,14 +136,14 @@ class AutotranslateFieldExtension extends Extension
 
     /**
      * @param bool $shortCodeOnly
-     * @return string The target locale
+     * @return string|Locale The target locale
      */
-    private function getAutotranslateTargetLocale($shortCodeOnly = true): string
+    private function getAutotranslateTargetLocale($shortCodeOnly = false)
     {
-        $locale = Locale::getCurrentLocale()->Locale;
+        $locale = Locale::getCurrentLocale();
 
         if ($shortCodeOnly) {
-            $bits = explode('_', $locale);
+            $bits = explode('_', $locale->Locale);
             return array_shift($bits);
         }
 
@@ -142,18 +152,29 @@ class AutotranslateFieldExtension extends Extension
 
     /**
      * @param bool $shortCodeOnly
-     * @return string The source locale
+     * @return string|Locale The source locale
      */
-    private function getAutotranslateSourceLocale($shortCodeOnly = true): string
+    private function getAutotranslateSourceLocale($shortCodeOnly = false)
     {
-        $locale = Locale::getDefault(Locale::getCurrentLocale()->Domain())->Locale;
+        $locale = Locale::getDefault(Locale::getCurrentLocale()->Domain());
 
         if ($shortCodeOnly) {
-            $bits = explode('_', $locale);
+            $bits = explode('_', $locale->Locale);
             return array_shift($bits);
         }
 
         return $locale;
+    }
+
+    /**
+     * Get the current cms locale as short language code (e.g. "en").
+     * @return string
+     */
+    private function getCMSLocaleForAutotranslateField(): string
+    {
+        $bits = explode('_', i18n::get_locale());
+
+        return array_shift($bits);
     }
 
     /**
@@ -186,6 +207,10 @@ class AutotranslateFieldExtension extends Extension
      */
     private function fetchAutoTranslateRecord(): ?DataObject
     {
+        if (!$this->owner || !$this->owner->hasMethod('getForm') || !$this->owner->getForm()) {
+            return null;
+        }
+
         $form = $this->owner->getForm();
         $record = null;
 
@@ -215,7 +240,7 @@ class AutotranslateFieldExtension extends Extension
             FluentState::singleton()
                 ->withState(
                     function ($state) use ($context, $record, &$sourceValue) {
-                        $state->setLocale($this->getAutotranslateSourceLocale(false));
+                        $state->setLocale($this->getAutotranslateSourceLocale()->Locale);
                         $sourceRecord = DataObject::get(get_class($record))->byID($record->ID);
                         $sourceValue = $sourceRecord->{$context->owner->Name};
                     }
@@ -228,6 +253,45 @@ class AutotranslateFieldExtension extends Extension
     }
 
     /**
+     * Get the active translation provider.
+     *
+     * @return string
+     */
+    private function getTranslationProvider(): string
+    {
+        return self::TRANSLATION_PROVIDER_GOOGLE;
+    }
+
+    /**
+     * Get the translation provider dependent config.
+     *
+     * @return array|null
+     */
+    private function getConfigForTranslationProvider(): ?array
+    {
+        if ($this->getTranslationProvider() === self::TRANSLATION_PROVIDER_GOOGLE) {
+            return [
+                'apiEndpoint' => self::config()->get('google_translate_api'),
+                'getVars'     => [
+                    'key' => self::config()->get('google_cloud_translation_api_key')
+                ],
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string The field title / label.
+     */
+    private function getAutotranslateFieldTitle(): string
+    {
+        $title = $this->owner->Title();
+
+        return method_exists($title, 'forTemplate') ? $title->forTemplate() : $title;
+    }
+
+    /**
      * Get the payload passed to the vue component.
      *
      * @return string|null
@@ -235,16 +299,27 @@ class AutotranslateFieldExtension extends Extension
     public function getAutotranslateFieldPayload(): ?string
     {
         if ($this->isAutotranslateActionAvailable()) {
+            $targetLocale = $this->getAutotranslateTargetLocale();
+            $sourceLocale = $this->getAutotranslateSourceLocale();
+
             return json_encode(
                 [
-                    'id'                 => $this->owner->ID(),
-                    'getVars'            => [
-                        'key' => self::config()->get('google_cloud_translation_api_key')
+                    'id'             => $this->owner->ID(),
+                    'fieldTitle'     => $this->getAutotranslateFieldTitle(),
+                    'cmsLocale'      => $this->getCMSLocaleForAutotranslateField(),
+                    'targetLocale'   => [
+                        'code'   => $this->getAutotranslateTargetLocale(true),
+                        'locale' => $targetLocale->Locale,
+                        'title'  => IntlLocales::singleton()->languageName($targetLocale->Locale)
                     ],
-                    'targetLocale'       => $this->getAutotranslateTargetLocale(),
-                    'sourceLocale'       => $this->getAutotranslateSourceLocale(),
-                    'sourceValue'        => $this->getAutotranslateSourceValue(),
-                    'googleTranslateApi' => self::config()->get('google_translate_api')
+                    'sourceLocale'   => [
+                        'code'   => $this->getAutotranslateSourceLocale(true),
+                        'locale' => $sourceLocale->Locale,
+                        'title'  => IntlLocales::singleton()->languageName($sourceLocale->Locale)
+                    ],
+                    'sourceValue'    => $this->getAutotranslateSourceValue(),
+                    'provider'       => $this->getTranslationProvider(),
+                    'providerConfig' => $this->getConfigForTranslationProvider()
                 ]
             );
         }

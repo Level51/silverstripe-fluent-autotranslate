@@ -1,0 +1,13 @@
+{
+  "field": {
+    "translateCta": "Translate from {sourceLocale} to {targetLocale}"
+  },
+  "modal": {
+    "translateCta": "Translate now",
+    "headline": "Translate from {sourceLocale} to {targetLocale}",
+    "sourceValueLabel": "{locale} value"
+  },
+  "google": {
+    "pricingHint": "<p><strong>{charCount}</strong> characters will be translated using <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">Google Cloud Translation</a>.</p><p>The current content of the field ({targetLocale}) will be overwritten.</p>"
+  }
+}
