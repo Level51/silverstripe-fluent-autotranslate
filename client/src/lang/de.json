@@ -1,0 +1,13 @@
+{
+  "field": {
+    "translateCta": "Übersetze von {sourceLocale} auf {targetLocale}"
+  },
+  "modal": {
+    "translateCta": "Jetzt übersetzen",
+    "headline": "Übersetze von {sourceLocale} auf {targetLocale}",
+    "sourceValueLabel": "Inhalt {locale}"
+  },
+  "google": {
+    "pricingHint": "<strong>{charCount}</strong> Zeichen werden mit Google Cloud Translation übersetzt, Kosten Informationen finden Sie <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">in deren Dokumention</a>."
+  }
+}

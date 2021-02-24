@@ -1,6 +1,17 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./client/src/lang/de.json":
+/*!*********************************!*\
+  !*** ./client/src/lang/de.json ***!
+  \*********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"field":{"translateCta":"Übersetze von {sourceLocale} auf {targetLocale}"},"modal":{"translateCta":"Jetzt übersetzen","headline":"Übersetze von {sourceLocale} auf {targetLocale}","sourceValueLabel":"Inhalt {locale}"},"google":{"pricingHint":"<strong>{charCount}</strong> Zeichen werden mit Google Cloud Translation übersetzt, Kosten Informationen finden Sie <a href=\\"https://cloud.google.com/translate/pricing#cloud-translation---basic\\" target=\\"_blank\\">in deren Dokumention</a>."}}');
+
+/***/ }),
+
 /***/ "./client/src/lang/en.json":
 /*!*********************************!*\
   !*** ./client/src/lang/en.json ***!
@@ -1852,12 +1863,14 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.dev.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.dev.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var src_App_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/App.vue */ "./client/src/js/App.vue");
-/* harmony import */ var vue_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-i18n */ "./node_modules/vue-i18n/dist/vue-i18n.esm.js");
+/* harmony import */ var vue_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-i18n */ "./node_modules/vue-i18n/dist/vue-i18n.esm.js");
 /* harmony import */ var _lang_en_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lang/en.json */ "./client/src/lang/en.json");
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./client/src/js/util.js");
+/* harmony import */ var _lang_de_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lang/de.json */ "./client/src/lang/de.json");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util */ "./client/src/js/util.js");
+
 
 
 
@@ -1865,16 +1878,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var render = function render(el) {
-  vue__WEBPACK_IMPORTED_MODULE_3___default().use(vue_i18n__WEBPACK_IMPORTED_MODULE_4__.default);
+  vue__WEBPACK_IMPORTED_MODULE_4___default().use(vue_i18n__WEBPACK_IMPORTED_MODULE_5__.default);
   var payload = JSON.parse(el.dataset.payload);
-  var i18n = new vue_i18n__WEBPACK_IMPORTED_MODULE_4__.default({
+  var i18n = new vue_i18n__WEBPACK_IMPORTED_MODULE_5__.default({
     locale: payload.cmsLocale,
     fallbackLocale: 'en',
     messages: {
-      en: _lang_en_json__WEBPACK_IMPORTED_MODULE_1__
+      en: _lang_en_json__WEBPACK_IMPORTED_MODULE_1__,
+      de: _lang_de_json__WEBPACK_IMPORTED_MODULE_2__
     }
   });
-  new (vue__WEBPACK_IMPORTED_MODULE_3___default())({
+  new (vue__WEBPACK_IMPORTED_MODULE_4___default())({
     i18n: i18n,
     render: function render(h) {
       return h(src_App_vue__WEBPACK_IMPORTED_MODULE_0__.default, {
@@ -1886,7 +1900,7 @@ var render = function render(el) {
   }).$mount("#".concat(el.id));
 };
 
-(0,_util__WEBPACK_IMPORTED_MODULE_2__.default)('.level51-autotranslateFieldPlaceholder', function (el) {
+(0,_util__WEBPACK_IMPORTED_MODULE_3__.default)('.level51-autotranslateFieldPlaceholder', function (el) {
   setTimeout(function () {
     render(el);
   }, 1);
