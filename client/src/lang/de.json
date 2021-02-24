@@ -8,6 +8,6 @@
     "sourceValueLabel": "Inhalt {locale}"
   },
   "google": {
-    "pricingHint": "<strong>{charCount}</strong> Zeichen werden mit Google Cloud Translation übersetzt, Kosten Informationen finden Sie <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">in deren Dokumention</a>."
+    "pricingHint": "<p><strong>{charCount}</strong> Zeichen werden mit <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">Google Cloud Translation</a> übersetzt.</p><p>Der aktuelle Inhalt des Feldes ({targetLocale}) wird dabei überschrieben.</p>"
   }
 }

@@ -24,7 +24,9 @@
           class="level51-autotranslateField-sourceValue"
           v-html="sourceValue" />
 
-        <div v-html="$t(`${provider}.pricingHint`, { charCount })" />
+        <div
+          class="level51-pricingHint"
+          v-html="$t(`${provider}.pricingHint`, { charCount, targetLocale: targetLocale.title })" />
       </div>
 
       <div class="modal-footer">
@@ -190,6 +192,18 @@ export default {
       background: @color-mono-94;
       margin-bottom: @space-3;
 
+      p {
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .level51-pricingHint {
       p {
         &:first-child {
           margin-top: 0;

@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"field":{"translateCta":"Übersetze von {sourceLocale} auf {targetLocale}"},"modal":{"translateCta":"Jetzt übersetzen","headline":"Übersetze von {sourceLocale} auf {targetLocale}","sourceValueLabel":"Inhalt {locale}"},"google":{"pricingHint":"<strong>{charCount}</strong> Zeichen werden mit Google Cloud Translation übersetzt, Kosten Informationen finden Sie <a href=\\"https://cloud.google.com/translate/pricing#cloud-translation---basic\\" target=\\"_blank\\">in deren Dokumention</a>."}}');
+module.exports = JSON.parse('{"field":{"translateCta":"Übersetze von {sourceLocale} auf {targetLocale}"},"modal":{"translateCta":"Jetzt übersetzen","headline":"Übersetze von {sourceLocale} auf {targetLocale}","sourceValueLabel":"Inhalt {locale}"},"google":{"pricingHint":"<p><strong>{charCount}</strong> Zeichen werden mit <a href=\\"https://cloud.google.com/translate/pricing#cloud-translation---basic\\" target=\\"_blank\\">Google Cloud Translation</a> übersetzt.</p><p>Der aktuelle Inhalt des Feldes ({targetLocale}) wird dabei überschrieben.</p>"}}');
 
 /***/ }),
 
@@ -19,7 +19,7 @@ module.exports = JSON.parse('{"field":{"translateCta":"Übersetze von {sourceLoc
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"field":{"translateCta":"Translate from {sourceLocale} to {targetLocale}"},"modal":{"translateCta":"Translate now","headline":"Translate from {sourceLocale} to {targetLocale}","sourceValueLabel":"{locale} value"},"google":{"pricingHint":"<strong>{charCount}</strong> characters will be translated using Google Cloud Translation, check <a href=\\"https://cloud.google.com/translate/pricing#cloud-translation---basic\\" target=\\"_blank\\">their docs</a> for pricing information."}}');
+module.exports = JSON.parse('{"field":{"translateCta":"Translate from {sourceLocale} to {targetLocale}"},"modal":{"translateCta":"Translate now","headline":"Translate from {sourceLocale} to {targetLocale}","sourceValueLabel":"{locale} value"},"google":{"pricingHint":"<p><strong>{charCount}</strong> characters will be translated using <a href=\\"https://cloud.google.com/translate/pricing#cloud-translation---basic\\" target=\\"_blank\\">Google Cloud Translation</a>.</p><p>The current content of the field ({targetLocale}) will be overwritten.</p>"}}');
 
 /***/ }),
 
@@ -1999,6 +1999,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+//
+//
 //
 //
 //
@@ -20892,10 +20894,12 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _c("div", {
+                  staticClass: "level51-pricingHint",
                   domProps: {
                     innerHTML: _vm._s(
                       _vm.$t(_vm.provider + ".pricingHint", {
-                        charCount: _vm.charCount
+                        charCount: _vm.charCount,
+                        targetLocale: _vm.targetLocale.title
                       })
                     )
                   }

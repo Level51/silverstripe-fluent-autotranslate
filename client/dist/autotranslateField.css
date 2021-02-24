@@ -22,6 +22,12 @@
 .level51-autotranslateField .level51-modal .level51-autotranslateField-sourceValue p:last-child {
   margin-bottom: 0;
 }
+.level51-autotranslateField .level51-modal .level51-pricingHint p:first-child {
+  margin-top: 0;
+}
+.level51-autotranslateField .level51-modal .level51-pricingHint p:last-child {
+  margin-bottom: 0;
+}
 
 
 /*# sourceMappingURL=autotranslateField.css.map*/
