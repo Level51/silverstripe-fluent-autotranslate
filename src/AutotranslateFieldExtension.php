@@ -27,25 +27,25 @@ class AutotranslateFieldExtension extends Extension
     /**
      * @var DataObject|null The affected DataObject record
      */
-    private ?DataObject $record = null;
+    private $record = null;
 
     /** @var string|null The field value in the source locale */
-    private ?string $sourceValue = null;
+    private $sourceValue = null;
 
     /** @var bool Whether the source locale value was already fetched or not (to cache requests) */
-    private bool $sourceValueFetched = false;
+    private $sourceValueFetched = false;
 
     /**
      * @var array|string[] List of FormField class names to exclude
      */
-    private static array $class_blacklist = [
+    private static $class_blacklist = [
         SiteTreeURLSegmentField::class
     ];
 
     /**
      * @var string The endpoint for the google translate api
      */
-    private static string $google_translate_api = 'https://translation.googleapis.com/language/translate/v2';
+    private static $google_translate_api = 'https://translation.googleapis.com/language/translate/v2';
 
     /**
      * Check if the autotranslate function should be available for the owner field.

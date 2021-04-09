@@ -1,6 +1,6 @@
 {
   "name": "silverstripe-fluent-autotranslate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Module for auto translation using Google Translate for Silverstripe with Fluent",
   "authors": {
     "name": "Level51",
