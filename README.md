@@ -2,7 +2,7 @@
 Module for auto translation using Google Cloud Translation for Silverstripe with Fluent.
 
 ## Requirements
-- [Silverstripe](https://github.com/silverstripe/silverstripe-framework) ^4
+- [Silverstripe](https://github.com/silverstripe/silverstripe-framework) ^4 || ^5
 - [Fluent](https://github.com/tractorcow-farm/silverstripe-fluent) >=4
 - PHP >= 7.1
 - ext-json

@@ -1,7 +1,7 @@
 {
   "name": "level51/silverstripe-fluent-autotranslate",
-  "version": "0.1.1",
-  "time": "2021-04-09",
+  "version": "0.1.2",
+  "time": "2024-06-25",
   "description": "Module for auto translation using Google Translate for Silverstripe with Fluent",
   "keywords": [
     "silverstripe",
@@ -22,7 +22,7 @@
     "php": ">=7.1",
     "ext-json": "*",
     "ext-intl": "*",
-    "silverstripe/framework": "^4"
+    "silverstripe/framework": "^4 || ^5"
   },
   "extra": {
     "installer-name": "silverstripe-fluent-autotranslate",
