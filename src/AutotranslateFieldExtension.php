@@ -111,6 +111,10 @@ class AutotranslateFieldExtension extends Extension
      */
     public function isAutotranslateActionAvailable(): bool
     {
+        if (!Locale::getLocales()->exists()) {
+            return false;
+        }
+
         if ($this->isAutotranslateAvailableForField()) {
             $locale = Locale::getCurrentLocale();
 
