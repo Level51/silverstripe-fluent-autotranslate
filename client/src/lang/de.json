@@ -9,5 +9,8 @@
   },
   "google": {
     "pricingHint": "<p><strong>{charCount}</strong> Zeichen werden mit <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">Google Cloud Translation</a> übersetzt.</p><p>Der aktuelle Inhalt des Feldes ({targetLocale}) wird dabei überschrieben.</p>"
+  },
+  "openai": {
+    "pricingHint": "<p><strong>{charCount}</strong> Zeichen werden mit <a href=\"https://openai.com/api/pricing/\" target=\"_blank\">GPT-40 mini</a> übersetzt.</p><p>Der aktuelle Inhalt des Feldes ({targetLocale}) wird dabei überschrieben.</p>"
   }
 }
