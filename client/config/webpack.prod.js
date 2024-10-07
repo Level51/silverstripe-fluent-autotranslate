@@ -4,23 +4,22 @@ const { VueLoaderPlugin } = require('vue-loader');
 const { DefinePlugin } = require('webpack');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const resolve = require('./webpack.resolve').forWebpack;
 
-module.exports = env => ({
-
+module.exports = (env = {}) => ({
   entry: {
-    autotranslateField: ['core-js/stable', 'regenerator-runtime/runtime', 'src/autotranslateField.js']
+    autotranslateField: ['core-js/stable', 'regenerator-runtime/runtime', 'src/autotranslateField.js'],
   },
 
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].js',
-    publicPath: ''
+    publicPath: '',
   },
 
-  mode: 'production',
+  mode: env.NODE_ENV || 'production',
 
   resolve,
 
@@ -28,75 +27,58 @@ module.exports = env => ({
     rules: [
       {
         test: /\.js$/,
-        exclude: file => (
-          /node_modules/.test(file)
-          && !/\.vue\.js/.test(file)
-        ),
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: [
-              '@babel/plugin-proposal-object-rest-spread',
-              '@babel/plugin-syntax-dynamic-import'
-            ],
-            presets: [['@babel/preset-env', { modules: false }, '@babel/preset-stage-3']]
-          }
-        }
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-proposal-object-rest-spread'],
+          },
+        },
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
       },
       {
         test: /\.css$/,
         use: [
-          {
-            loader: 'vue-style-loader'
-          },
-          {
-            loader: MiniCSSExtractPlugin.loader
-          },
-          {
-            loader: 'css-loader'
-          }
-        ]
+          MiniCSSExtractPlugin.loader,
+          'css-loader',
+        ],
       },
       {
         test: /\.less$/,
         use: [
-          {
-            loader: 'vue-style-loader'
-          },
-          {
-            loader: MiniCSSExtractPlugin.loader
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'less-loader'
-          }
-        ]
-      }
-    ]
+          MiniCSSExtractPlugin.loader,
+          'css-loader',
+          'less-loader',
+        ],
+      },
+    ],
+  },
+
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new CssMinimizerPlugin(), // Replaced OptimizeCssAssetsPlugin
+    ],
   },
 
   plugins: [
     new DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(env.NODE_ENV)
-      }
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || 'production'),
     }),
 
     new VueLoaderPlugin(),
 
-    new OptimizeCssAssetsPlugin(),
     new MiniCSSExtractPlugin({
-      filename: '[name].css'
+      filename: '[name].css',
     }),
 
     new CompressionPlugin({
-      algorithm: 'gzip'
+      algorithm: 'gzip',
+      test: /\.(js|css|html|svg)$/,
     }),
-  ]
+  ],
 });
