@@ -1,5 +1,5 @@
 en:
   Level51\Autotranslate\BlackListExtension:
-    Translation: 'Translation'
+    Translation: 'Auto Translate'
     BlackListValues: 'Blacklist Values'
     BlackListValuesDescription: 'Enter one value per line, the translatior will ignore these values and keep them as they are.'

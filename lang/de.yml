@@ -1,6 +1,5 @@
 de:
   Level51\Autotranslate\BlackListExtension:
-    Translation: 'Übersetzung'
+    Translation: 'Automatische Übersetzung'
     BlackListValues: 'Blacklist Werte'
     BlackListValuesDescription: 'Geben Sie einen Wert pro Zeile ein. Der Übersetzer ignoriert diese Werte und behält sie unverändert bei.'
-w
