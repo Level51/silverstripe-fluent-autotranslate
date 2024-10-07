@@ -45,6 +45,7 @@
 import axios from 'axios';
 import qs from 'qs';
 import Modal from './Modal.vue';
+import OpenAI from 'openai';
 
 /**
  * @todo error reporting
@@ -133,7 +134,26 @@ export default {
   },
   methods: {
     async translate() {
-      await this.translateWithGoogle();
+      if(this.provider === 'google') {
+        await this.translateWithGoogle();
+      }
+      if(this.provider === 'openai') {
+        await this.translateWithOpenAI();
+      }
+
+      // Update the save button and form state
+      const saveButton = document.querySelector('#Form_ItemEditForm_action_doSave');
+      if(saveButton) {
+        saveButton.classList.remove('btn-outline-primary', 'font-icon-tick');
+        saveButton.classList.add('btn-primary', 'font-icon-save');
+      }
+
+      // Mark the form as changed - so the browser will ask for confirmation when leaving the page without saving
+      const form = document.querySelector('#Form_ItemEditForm');
+      if(form) {
+        form.classList.add('changed');
+      }
+
       this.isTranslateModalVisible = false;
     },
     async translateWithGoogle() {
@@ -150,6 +170,40 @@ export default {
           && response.data.translations.length > 0) {
           this.setValue(response.data.translations[0].translatedText);
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async translateWithOpenAI() {
+      try {
+        const client = new OpenAI({
+          apiKey: this.providerConfig.getVars.key, // This is the default and can be omitted
+          dangerouslyAllowBrowser: true
+        });
+
+        const blacklist = this.payload.termsBlacklist || '';
+        let requestContent = 'Translate the following text from ' +  this.sourceLocale.code + ' to ' + this.targetLocale.code;
+        if(blacklist) requestContent += ', but do not translate the words from this list: ' + blacklist;
+        requestContent += '. Here is the value to translate: ' + this.sourceValue;
+
+        const stream = await client.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a translator that preserves some words in the original language.'
+            },
+            {
+              role: 'user',
+              content: requestContent
+            }
+          ],
+          max_tokens: this.payload.sourceValue.length,
+          temperature: 0
+        });
+
+        this.setValue(stream.choices[0]?.message?.content || '')
+
       } catch (error) {
         console.log(error);
       }

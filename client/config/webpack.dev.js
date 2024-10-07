@@ -2,24 +2,22 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const { DefinePlugin } = require('webpack');
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const resolve = require('./webpack.resolve').forWebpack;
 
-module.exports = env => ({
-
+module.exports = (env = {}) => ({
   entry: {
-    autotranslateField: ['core-js/stable', 'regenerator-runtime/runtime', 'src/autotranslateField.js']
+    autotranslateField: ['core-js/stable', 'regenerator-runtime/runtime', 'src/autotranslateField.js'],
   },
 
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].js',
-    publicPath: ''
+    publicPath: '',
   },
 
-  mode: 'development',
+  mode: env.NODE_ENV || 'development',
 
-  devtool: 'source-map',
+  devtool: 'eval-cheap-module-source-map', // Updated to Webpack 5 compatible devtool
 
   resolve,
 
@@ -27,70 +25,50 @@ module.exports = env => ({
     rules: [
       {
         test: /\.js$/,
-        exclude: file => (
-          /node_modules/.test(file)
-          && !/\.vue\.js/.test(file)
-        ),
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: [
-              '@babel/plugin-proposal-object-rest-spread',
-              '@babel/plugin-syntax-dynamic-import'
-            ],
-            presets: [['@babel/preset-env', { modules: false }, '@babel/preset-stage-3']]
-          }
-        }
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-proposal-object-rest-spread'],
+          },
+        },
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
       },
       {
         test: /\.css$/,
         use: [
-          {
-            loader: 'vue-style-loader'
-          },
-          {
-            loader: MiniCSSExtractPlugin.loader
-          },
-          {
-            loader: 'css-loader'
-          }
-        ]
+          'vue-style-loader',  // Hot-reloads CSS during development
+          'css-loader',
+        ],
       },
       {
         test: /\.less$/,
         use: [
-          {
-            loader: 'vue-style-loader'
-          },
-          {
-            loader: MiniCSSExtractPlugin.loader
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'less-loader'
-          }
-        ]
-      }
-    ]
+          'vue-style-loader',  // Hot-reloads LESS during development
+          'css-loader',
+          'less-loader',
+        ],
+      },
+    ],
   },
 
   plugins: [
     new DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(env.NODE_ENV)
-      }
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || 'development'),
     }),
 
     new VueLoaderPlugin(),
 
-    new MiniCSSExtractPlugin({
-      filename: '[name].css'
-    })
-  ]
+    // No MiniCSSExtractPlugin in development to allow hot-reloading of styles
+  ],
+
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    hot: true,  // Enable hot module replacement
+    open: true, // Automatically open the app in the browser
+  },
 });
