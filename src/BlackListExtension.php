@@ -16,10 +16,7 @@ class BlackListExtension extends DataExtension
     {
         $fields->addFieldsToTab('Root.Translation', [
             TextareaField::create('BlackListValues', 'BlackList Values')
-                ->setDescription('Enter one value per line, the translatior will ignore these values and keep them as they are.'),
-            ReadonlyField::create('BlackListValuesPreview', 'Preview')
-                ->setValue($this->BlackListValues())
-                ->setDescription('You have to reload the page to see the changes.')
+                ->setDescription('Enter one value per line, the translatior will ignore these values and keep them as they are.')
         ]);
     }
 
