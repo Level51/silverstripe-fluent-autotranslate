@@ -8,3 +8,11 @@ SilverStripe\Forms\TextField:
 SilverStripe\Forms\TextareaField:
   extensions:
     - Level51\Autotranslate\AutotranslateFieldExtension
+
+---
+Only:
+  moduleexists: 'dnadesign/silverstripe-elemental'
+---
+DNADesign\Elemental\Forms\TextCheckboxGroupField:
+  extensions:
+    - Level51\Autotranslate\AutotranslateFieldExtension

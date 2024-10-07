@@ -12,6 +12,7 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 use SilverStripe\i18n\Data\Intl\IntlLocales;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Requirements;
 use TractorCow\Fluent\Extension\FluentExtension;
 use TractorCow\Fluent\Model\Locale;
@@ -21,8 +22,13 @@ class AutotranslateFieldExtension extends Extension
 {
     use Configurable;
 
+    private static string $translation_provider = 'google'; // OPTIONS: ['google', 'openai']
+
     /** @var string */
     public const TRANSLATION_PROVIDER_GOOGLE = 'google';
+
+    /** @var string */
+    public const TRANSLATION_PROVIDER_OPENAI = 'openai';
 
     /**
      * @var DataObject|null The affected DataObject record
@@ -263,7 +269,13 @@ class AutotranslateFieldExtension extends Extension
      */
     private function getTranslationProvider(): string
     {
-        return self::TRANSLATION_PROVIDER_GOOGLE;
+        switch (self::config()->get('translation_provider')) {
+            case 'openai':
+                return self::TRANSLATION_PROVIDER_OPENAI;
+            case 'google':
+            default:
+                return self::TRANSLATION_PROVIDER_GOOGLE;
+        }
     }
 
     /**
@@ -273,16 +285,35 @@ class AutotranslateFieldExtension extends Extension
      */
     private function getConfigForTranslationProvider(): ?array
     {
-        if ($this->getTranslationProvider() === self::TRANSLATION_PROVIDER_GOOGLE) {
-            return [
-                'apiEndpoint' => self::config()->get('google_translate_api'),
-                'getVars'     => [
-                    'key' => self::config()->get('google_cloud_translation_api_key')
-                ],
-            ];
+        switch (self::config()->get('translation_provider')) {
+            case self::TRANSLATION_PROVIDER_GOOGLE:
+                return [
+                    'apiEndpoint' => self::config()->get('google_translate_api'),
+                    'getVars'     => [
+                        'key' => self::config()->get('google_cloud_translation_api_key')
+                    ],
+                ];
+            case self::TRANSLATION_PROVIDER_OPENAI:
+                return [
+                    'getVars'     => [
+                        'key' => self::config()->get('openai_translation_api_key')
+                    ],
+                ];
         }
 
         return null;
+    }
+
+    private function getAutotranslateTermsBlacklist()
+    {
+        switch (self::config()->get('translation_provider')) {
+            case self::TRANSLATION_PROVIDER_GOOGLE:
+                return '';
+            case self::TRANSLATION_PROVIDER_OPENAI:
+                if(SiteConfig::has_extension(BlackListExtension::class)) {
+                    return SiteConfig::current_site_config()->BlackListValues();
+                }
+        }
     }
 
     /**
@@ -323,7 +354,8 @@ class AutotranslateFieldExtension extends Extension
                     ],
                     'sourceValue'    => $this->getAutotranslateSourceValue(),
                     'provider'       => $this->getTranslationProvider(),
-                    'providerConfig' => $this->getConfigForTranslationProvider()
+                    'providerConfig' => $this->getConfigForTranslationProvider(),
+                    'termsBlacklist' => $this->getAutotranslateTermsBlacklist(),
                 ]
             );
         }

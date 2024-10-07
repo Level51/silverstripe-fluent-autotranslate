@@ -9,5 +9,8 @@
   },
   "google": {
     "pricingHint": "<p><strong>{charCount}</strong> characters will be translated using <a href=\"https://cloud.google.com/translate/pricing#cloud-translation---basic\" target=\"_blank\">Google Cloud Translation</a>.</p><p>The current content of the field ({targetLocale}) will be overwritten.</p>"
+  },
+  "openai": {
+    "pricingHint": "<p><strong>{charCount}</strong> characters will be translated using <a href=\"https://openai.com/api/pricing\" target=\"_blank\">GPT-40 mini</a>.</p><p>The current content of the field ({targetLocale}) will be overwritten.</p>"
   }
 }
