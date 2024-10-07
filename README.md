@@ -30,7 +30,9 @@ Level51\Autotranslate\AutotranslateFieldExtension:
 See https://cloud.google.com/translate/docs/setup for setup instructions.
 
 ## Setup OpenAI API
-Define the API key for the OpenAI API like this:
+See https://platform.openai.com/docs/quickstart/create-and-export-an-api-key for setup instructions and how to get an API key.
+
+Define the API key for the OpenAI API like this in your `config.yml`:
 
 ```yaml
 Level51\Autotranslate\AutotranslateFieldExtension:
