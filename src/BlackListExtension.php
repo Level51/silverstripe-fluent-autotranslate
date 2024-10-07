@@ -14,9 +14,9 @@ class BlackListExtension extends DataExtension
 
     public function updateCMSFields($fields)
     {
-        $fields->addFieldsToTab('Root.Translation', [
-            TextareaField::create('BlackListValues', 'BlackList Values')
-                ->setDescription('Enter one value per line, the translatior will ignore these values and keep them as they are.')
+        $fields->addFieldsToTab('Root.' . _t(self::class . '.Translation', 'Translation'), [
+            TextareaField::create('BlackListValues', _t(self::class . '.BlackListValues', 'Blacklist Values'))
+                ->setDescription(_t(self::class . '.BlackListValuesDescription', 'Enter one value per line, the translatior will ignore these values and keep them as they are.'))
         ]);
     }
 
