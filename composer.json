@@ -1,14 +1,15 @@
 {
   "name": "level51/silverstripe-fluent-autotranslate",
-  "version": "0.2.0",
-  "time": "2024-06-27",
-  "description": "Module for auto translation using Google Translate for Silverstripe with Fluent",
+  "version": "0.3.0",
+  "time": "2024-10-07",
+  "description": "Module for auto translation using Google Translate or OpenAI for Silverstripe with Fluent",
   "keywords": [
     "silverstripe",
     "fluent",
     "translate",
     "autotranslate",
-    "google translate"
+    "google translate",
+    "openai"
   ],
   "type": "silverstripe-vendormodule",
   "license": "MIT",
