@@ -271,4 +271,12 @@ export default {
     }
   }
 }
+
+.level51-autotranslateNoSourceValue {
+  color: red;
+
+  .font-icon-translatable {
+    color: red;
+  }
+}
 </style>
