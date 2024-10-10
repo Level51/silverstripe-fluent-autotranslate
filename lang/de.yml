@@ -3,5 +3,5 @@ de:
     Translation: 'Automatische Übersetzung'
     BlackListValues: 'Blacklist Werte'
     BlackListValuesDescription: 'Geben Sie einen Wert pro Zeile ein. Der Übersetzer ignoriert diese Werte und behält sie unverändert bei.'
-  Level51\FluentAutotranslate\AutotranslateField:
+  Level51\Autotranslate\AutotranslateField:
     NO_SOURCE_VALUE: 'Kein Ausgangswert'

@@ -12,7 +12,7 @@
         <% else_if not $getAutotranslateSourceValue %>
             <div class="level51-autotranslateNoSourceValue">
                 <i class="font-icon font-icon-translatable"></i>
-                <%t Level51\FluentAutotranslate\AutotranslateField.NO_SOURCE_VALUE 'No source value' %>
+                <%t Level51\Autotranslate\AutotranslateField.NO_SOURCE_VALUE 'No source value' %>
             </div>
         <% end_if %>
     </div>
