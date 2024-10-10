@@ -262,6 +262,15 @@ class AutotranslateFieldExtension extends Extension
         return $this->sourceValue;
     }
 
+    public function hasAutotranslateSourceValue()
+    {
+        $locale = Locale::getCurrentLocale();
+        if ($locale->getIsDefault()) {
+            return true; // always return true for default locale
+        }
+        return $this->getAutotranslateSourceValue() !== null;
+    }
+
     /**
      * Get the active translation provider.
      *
