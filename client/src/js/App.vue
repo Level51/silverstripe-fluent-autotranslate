@@ -184,7 +184,8 @@ export default {
         const blacklist = this.payload.termsBlacklist || '';
         let requestContent = 'Translate the following text from ' +  this.sourceLocale.code + ' to ' + this.targetLocale.code;
         if(blacklist) requestContent += ', but do not translate the words from this list: ' + blacklist;
-        requestContent += '. Here is the value to translate: ' + this.sourceValue;
+        requestContent += ' Only give me the translation as a result.';
+        requestContent += '. Here is the value to translate: ' + this.sourceValue + '';
 
         const stream = await client.chat.completions.create({
           model: 'gpt-4o-mini',
