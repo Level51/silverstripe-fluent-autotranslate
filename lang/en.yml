@@ -3,3 +3,5 @@ en:
     Translation: 'Auto Translate'
     BlackListValues: 'Blacklist Values'
     BlackListValuesDescription: 'Enter one value per line, the translator will ignore these values and keep them as they are.'
+  Level51\Autotranslate\AutotranslateField:
+    NO_SOURCE_VALUE: 'No source value'

@@ -1969,7 +1969,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 83294:
+/***/ 7652:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1998,7 +1998,7 @@ __webpack_require__.d(error_namespaceObject, {
 // EXTERNAL MODULE: ./node_modules/vue/dist/vue.common.prod.js
 var vue_common_prod = __webpack_require__(66474);
 var vue_common_prod_default = /*#__PURE__*/__webpack_require__.n(vue_common_prod);
-;// ./node_modules/babel-loader/lib/index.js??clonedRuleSet-1.use!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./client/src/js/App.vue?vue&type=template&id=48b2edb5
+;// ./node_modules/babel-loader/lib/index.js??clonedRuleSet-1.use!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./client/src/js/App.vue?vue&type=template&id=6c5394b4
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -2058,7 +2058,7 @@ var render = function render() {
 var staticRenderFns = [];
 render._withStripped = true;
 
-;// ./client/src/js/App.vue?vue&type=template&id=48b2edb5
+;// ./client/src/js/App.vue?vue&type=template&id=6c5394b4
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __webpack_require__(72505);
@@ -2280,7 +2280,7 @@ var component = normalizeComponent(
 
 /* harmony default export */ const Modal = (component.exports);
 ;// ./node_modules/openai/version.mjs
-const VERSION = '4.67.0'; // x-release-please-version
+const VERSION = '4.67.3'; // x-release-please-version
 //# sourceMappingURL=version.mjs.map
 ;// ./node_modules/openai/_shims/registry.mjs
 let auto = false;
@@ -2414,7 +2414,93 @@ function getRuntime({ manuallyImported } = {}) {
 if (!kind) setShims(getRuntime(), { auto: true });
 
 
+;// ./node_modules/openai/internal/decoders/line.mjs
+
+/**
+ * A re-implementation of httpx's `LineDecoder` in Python that handles incrementally
+ * reading lines from text.
+ *
+ * https://github.com/encode/httpx/blob/920333ea98118e9cf617f246905d7b202510941c/httpx/_decoders.py#L258
+ */
+class line_LineDecoder {
+    constructor() {
+        this.buffer = [];
+        this.trailingCR = false;
+    }
+    decode(chunk) {
+        let text = this.decodeText(chunk);
+        if (this.trailingCR) {
+            text = '\r' + text;
+            this.trailingCR = false;
+        }
+        if (text.endsWith('\r')) {
+            this.trailingCR = true;
+            text = text.slice(0, -1);
+        }
+        if (!text) {
+            return [];
+        }
+        const trailingNewline = line_LineDecoder.NEWLINE_CHARS.has(text[text.length - 1] || '');
+        let lines = text.split(line_LineDecoder.NEWLINE_REGEXP);
+        // if there is a trailing new line then the last entry will be an empty
+        // string which we don't care about
+        if (trailingNewline) {
+            lines.pop();
+        }
+        if (lines.length === 1 && !trailingNewline) {
+            this.buffer.push(lines[0]);
+            return [];
+        }
+        if (this.buffer.length > 0) {
+            lines = [this.buffer.join('') + lines[0], ...lines.slice(1)];
+            this.buffer = [];
+        }
+        if (!trailingNewline) {
+            this.buffer = [lines.pop() || ''];
+        }
+        return lines;
+    }
+    decodeText(bytes) {
+        if (bytes == null)
+            return '';
+        if (typeof bytes === 'string')
+            return bytes;
+        // Node:
+        if (typeof Buffer !== 'undefined') {
+            if (bytes instanceof Buffer) {
+                return bytes.toString();
+            }
+            if (bytes instanceof Uint8Array) {
+                return Buffer.from(bytes).toString();
+            }
+            throw new error_OpenAIError(`Unexpected: received non-Uint8Array (${bytes.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
+        }
+        // Browser
+        if (typeof TextDecoder !== 'undefined') {
+            if (bytes instanceof Uint8Array || bytes instanceof ArrayBuffer) {
+                this.textDecoder ?? (this.textDecoder = new TextDecoder('utf8'));
+                return this.textDecoder.decode(bytes);
+            }
+            throw new error_OpenAIError(`Unexpected: received non-Uint8Array/ArrayBuffer (${bytes.constructor.name}) in a web platform. Please report this error.`);
+        }
+        throw new error_OpenAIError(`Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.`);
+    }
+    flush() {
+        if (!this.buffer.length && !this.trailingCR) {
+            return [];
+        }
+        const lines = [this.buffer.join('')];
+        this.buffer = [];
+        this.trailingCR = false;
+        return lines;
+    }
+}
+// prettier-ignore
+line_LineDecoder.NEWLINE_CHARS = new Set(['\n', '\r']);
+line_LineDecoder.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
+//# sourceMappingURL=line.mjs.map
 ;// ./node_modules/openai/streaming.mjs
+
 
 
 
@@ -2494,7 +2580,7 @@ class Stream {
     static fromReadableStream(readableStream, controller) {
         let consumed = false;
         async function* iterLines() {
-            const lineDecoder = new LineDecoder();
+            const lineDecoder = new line_LineDecoder();
             const iter = readableStreamAsyncIterable(readableStream);
             for await (const chunk of iter) {
                 for (const line of lineDecoder.decode(chunk)) {
@@ -2599,7 +2685,7 @@ async function* _iterSSEMessages(response, controller) {
         throw new error_OpenAIError(`Attempted to iterate over a response with no body`);
     }
     const sseDecoder = new SSEDecoder();
-    const lineDecoder = new LineDecoder();
+    const lineDecoder = new line_LineDecoder();
     const iter = readableStreamAsyncIterable(response.body);
     for await (const sseChunk of iterSSEChunks(iter)) {
         for (const line of lineDecoder.decode(sseChunk)) {
@@ -2708,88 +2794,6 @@ class SSEDecoder {
         return null;
     }
 }
-/**
- * A re-implementation of httpx's `LineDecoder` in Python that handles incrementally
- * reading lines from text.
- *
- * https://github.com/encode/httpx/blob/920333ea98118e9cf617f246905d7b202510941c/httpx/_decoders.py#L258
- */
-class LineDecoder {
-    constructor() {
-        this.buffer = [];
-        this.trailingCR = false;
-    }
-    decode(chunk) {
-        let text = this.decodeText(chunk);
-        if (this.trailingCR) {
-            text = '\r' + text;
-            this.trailingCR = false;
-        }
-        if (text.endsWith('\r')) {
-            this.trailingCR = true;
-            text = text.slice(0, -1);
-        }
-        if (!text) {
-            return [];
-        }
-        const trailingNewline = LineDecoder.NEWLINE_CHARS.has(text[text.length - 1] || '');
-        let lines = text.split(LineDecoder.NEWLINE_REGEXP);
-        // if there is a trailing new line then the last entry will be an empty
-        // string which we don't care about
-        if (trailingNewline) {
-            lines.pop();
-        }
-        if (lines.length === 1 && !trailingNewline) {
-            this.buffer.push(lines[0]);
-            return [];
-        }
-        if (this.buffer.length > 0) {
-            lines = [this.buffer.join('') + lines[0], ...lines.slice(1)];
-            this.buffer = [];
-        }
-        if (!trailingNewline) {
-            this.buffer = [lines.pop() || ''];
-        }
-        return lines;
-    }
-    decodeText(bytes) {
-        if (bytes == null)
-            return '';
-        if (typeof bytes === 'string')
-            return bytes;
-        // Node:
-        if (typeof Buffer !== 'undefined') {
-            if (bytes instanceof Buffer) {
-                return bytes.toString();
-            }
-            if (bytes instanceof Uint8Array) {
-                return Buffer.from(bytes).toString();
-            }
-            throw new error_OpenAIError(`Unexpected: received non-Uint8Array (${bytes.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
-        }
-        // Browser
-        if (typeof TextDecoder !== 'undefined') {
-            if (bytes instanceof Uint8Array || bytes instanceof ArrayBuffer) {
-                this.textDecoder ?? (this.textDecoder = new TextDecoder('utf8'));
-                return this.textDecoder.decode(bytes);
-            }
-            throw new error_OpenAIError(`Unexpected: received non-Uint8Array/ArrayBuffer (${bytes.constructor.name}) in a web platform. Please report this error.`);
-        }
-        throw new error_OpenAIError(`Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.`);
-    }
-    flush() {
-        if (!this.buffer.length && !this.trailingCR) {
-            return [];
-        }
-        const lines = [this.buffer.join('')];
-        this.buffer = [];
-        this.trailingCR = false;
-        return lines;
-    }
-}
-// prettier-ignore
-LineDecoder.NEWLINE_CHARS = new Set(['\n', '\r']);
-LineDecoder.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
 /** This is an internal helper function that's just used for testing */
 function _decodeChunks(chunks) {
     const decoder = new LineDecoder();
@@ -3074,7 +3078,7 @@ class APIPromise extends Promise {
         this.parseResponse = parseResponse;
     }
     _thenUnwrap(transform) {
-        return new APIPromise(this.responsePromise, async (props) => _addRequestID(transform(await this.parseResponse(props)), props.response));
+        return new APIPromise(this.responsePromise, async (props) => _addRequestID(transform(await this.parseResponse(props), props), props.response));
     }
     /**
      * Gets the raw `Response` instance instead of parsing the response
@@ -8474,8 +8478,9 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
               blacklist = _this3.payload.termsBlacklist || '';
               requestContent = 'Translate the following text from ' + _this3.sourceLocale.code + ' to ' + _this3.targetLocale.code;
               if (blacklist) requestContent += ', but do not translate the words from this list: ' + blacklist;
-              requestContent += '. Here is the value to translate: ' + _this3.sourceValue;
-              _context3.next = 8;
+              requestContent += ' Only give me the translation as a result.';
+              requestContent += '. Here is the value to translate: ' + _this3.sourceValue + '';
+              _context3.next = 9;
               return client.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [{
@@ -8488,20 +8493,20 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
                 max_tokens: _this3.payload.sourceValue.length,
                 temperature: 0
               });
-            case 8:
+            case 9:
               stream = _context3.sent;
               _this3.setValue(((_stream$choices$ = stream.choices[0]) === null || _stream$choices$ === void 0 || (_stream$choices$ = _stream$choices$.message) === null || _stream$choices$ === void 0 ? void 0 : _stream$choices$.content) || '');
-              _context3.next = 15;
+              _context3.next = 16;
               break;
-            case 12:
-              _context3.prev = 12;
+            case 13:
+              _context3.prev = 13;
               _context3.t0 = _context3["catch"](0);
               console.log(_context3.t0);
-            case 15:
+            case 16:
             case "end":
               return _context3.stop();
           }
-        }, _callee3, null, [[0, 12]]);
+        }, _callee3, null, [[0, 13]]);
       }))();
     },
     setValue: function setValue(value) {
@@ -34751,7 +34756,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 	// This entry module used 'module' so it can't be inlined
 /******/ 	__webpack_require__(84315);
 /******/ 	__webpack_require__(7452);
-/******/ 	var __webpack_exports__ = __webpack_require__(83294);
+/******/ 	var __webpack_exports__ = __webpack_require__(7652);
 /******/ 	
 /******/ })()
 ;

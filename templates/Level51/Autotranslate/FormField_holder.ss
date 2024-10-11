@@ -9,6 +9,11 @@
 
         <% if $isAutotranslateActionAvailable %>
             <div id="$AutotranslateFieldID" class="level51-autotranslateFieldPlaceholder" data-payload='$AutotranslateFieldPayload.RAW'></div>
+        <% else_if not $hasAutotranslateSourceValue %>
+            <div class="level51-autotranslateNoSourceValue">
+                <i class="font-icon font-icon-translatable"></i>
+                <%t Level51\Autotranslate\AutotranslateField.NO_SOURCE_VALUE 'No source value' %>
+            </div>
         <% end_if %>
     </div>
     <% if $RightTitle %><p class="form__field-extra-label" id="extra-label-$ID">$RightTitle</p><% end_if %>
