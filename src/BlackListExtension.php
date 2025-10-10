@@ -2,11 +2,10 @@
 
 namespace Level51\Autotranslate;
 
-use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\TextareaField;
-use SilverStripe\ORM\DataExtension;
 
-class BlackListExtension extends DataExtension
+class BlackListExtension extends Extension
 {
     private static $db = [
         'BlackListValues' => 'Text'
