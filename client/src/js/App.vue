@@ -31,10 +31,24 @@
 
       <div class="modal-footer">
         <a
-          class="btn btn-primary font-icon-translatable"
+          class="btn btn-primary"
+          :class="{
+            'font-icon-translatable': !isLoading,
+            'btn--loading': isLoading,
+            'loading': isLoading
+          }"
           href=""
-          @click.prevent="translate">
-          {{ $t('modal.translateCta') }}
+          @click.prevent="translate($event)">
+          <div
+            v-if="isLoading"
+            class="btn__loading-icon">
+            <span class="btn__circle btn__circle--1" />
+            <span class="btn__circle btn__circle--2" />
+            <span class="btn__circle btn__circle--3" />
+          </div>
+          <span
+            :style="isLoading ? { visibility: 'hidden' } : null"
+            class="btn__title">{{ $t('modal.translateCta') }}</span>
         </a>
       </div>
     </modal>
@@ -44,8 +58,8 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
-import Modal from './Modal.vue';
 import OpenAI from 'openai';
+import Modal from './Modal.vue';
 
 /**
  * @todo error reporting
@@ -61,7 +75,8 @@ export default {
   data() {
     return {
       inputElement: null,
-      isTranslateModalVisible: false
+      isTranslateModalVisible: false,
+      isLoading: false,
     };
   },
   mounted() {
@@ -134,26 +149,30 @@ export default {
   },
   methods: {
     async translate() {
-      if(this.provider === 'google') {
+      this.isLoading = true;
+
+      if (this.provider === 'google') {
         await this.translateWithGoogle();
       }
-      if(this.provider === 'openai') {
+      if (this.provider === 'openai') {
         await this.translateWithOpenAI();
       }
 
       // Update the save button and form state
       const saveButton = document.querySelector('#Form_ItemEditForm_action_doSave');
-      if(saveButton) {
+      if (saveButton) {
         saveButton.classList.remove('btn-outline-primary', 'font-icon-tick');
         saveButton.classList.add('btn-primary', 'font-icon-save');
       }
 
+      // eslint-disable-next-line max-len
       // Mark the form as changed - so the browser will ask for confirmation when leaving the page without saving
       const form = document.querySelector('#Form_ItemEditForm');
-      if(form) {
+      if (form) {
         form.classList.add('changed');
       }
 
+      this.isLoading = false;
       this.isTranslateModalVisible = false;
     },
     async translateWithGoogle() {
@@ -182,10 +201,10 @@ export default {
         });
 
         const blacklist = this.payload.termsBlacklist || '';
-        let requestContent = 'Translate the following text from ' +  this.sourceLocale.code + ' to ' + this.targetLocale.code;
-        if(blacklist) requestContent += ', but do not translate the words from this list: ' + blacklist;
+        let requestContent = `Translate the following text from ${this.sourceLocale.code} to ${this.targetLocale.code}`;
+        if (blacklist) requestContent += `, but do not translate the words from this list: ${blacklist}`;
         requestContent += ' Only give me the translation as a result.';
-        requestContent += '. Here is the value to translate: ' + this.sourceValue + '';
+        requestContent += `. Here is the value to translate: ${this.sourceValue}`;
 
         const stream = await client.chat.completions.create({
           model: 'gpt-4o-mini',
@@ -203,8 +222,7 @@ export default {
           temperature: 0
         });
 
-        this.setValue(stream.choices[0]?.message?.content || '')
-
+        this.setValue(stream.choices[0]?.message?.content || '');
       } catch (error) {
         console.log(error);
       }

@@ -8,7 +8,7 @@
         <% if $Description %><p class="form__field-description form-text" id="describes-$ID">$Description</p><% end_if %>
 
         <% if $isAutotranslateActionAvailable %>
-            <div id="$AutotranslateFieldID" class="level51-autotranslateFieldPlaceholder" data-payload='$AutotranslateFieldPayload.RAW'></div>
+            <div id="$AutotranslateFieldID" class="level51-autotranslateFieldPlaceholder" data-payload='$AutotranslateFieldPayload'></div>
         <% else_if not $hasAutotranslateSourceValue %>
             <div class="level51-autotranslateNoSourceValue">
                 <i class="font-icon font-icon-translatable"></i>
