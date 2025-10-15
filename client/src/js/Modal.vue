@@ -10,7 +10,8 @@
               v-html="title" />
             <button
               type="button"
-              class="close"
+              class="btn-close"
+              aria-label="Close"
               @click.prevent="close">
               <span aria-hidden="true">x</span>
             </button>
@@ -89,4 +90,9 @@ export default {
 .modal.level51-modal {
   display: block;
 }
+
+.modal.level51-modal .btn-close{
+    margin-right: 0;
+}
+
 </style>
