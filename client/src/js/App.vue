@@ -31,10 +31,21 @@
 
       <div class="modal-footer">
         <a
-          class="btn btn-primary font-icon-translatable"
-          href=""
-          @click.prevent="translate">
-          {{ $t('modal.translateCta') }}
+            :class="{
+            'btn': true,
+            'btn-primary': true,
+            'font-icon-translatable': !isLoading,
+            'btn--loading': isLoading,
+            'loading': isLoading
+            }"
+            href=""
+            @click.prevent="translate($event)">
+            <div v-if="isLoading" class="btn__loading-icon">
+                <span class="btn__circle btn__circle--1"></span>
+                <span class="btn__circle btn__circle--2"></span>
+                <span class="btn__circle btn__circle--3"></span>
+            </div>
+            <span v-bind:style="isLoading ? { visibility: 'hidden' } : null" class="btn__title">{{ $t('modal.translateCta') }}</span>
         </a>
       </div>
     </modal>
@@ -61,7 +72,8 @@ export default {
   data() {
     return {
       inputElement: null,
-      isTranslateModalVisible: false
+      isTranslateModalVisible: false,
+      isLoading: false,
     };
   },
   mounted() {
@@ -134,6 +146,8 @@ export default {
   },
   methods: {
     async translate() {
+      this.isLoading = true;
+
       if(this.provider === 'google') {
         await this.translateWithGoogle();
       }
@@ -154,6 +168,7 @@ export default {
         form.classList.add('changed');
       }
 
+      this.isLoading = false;
       this.isTranslateModalVisible = false;
     },
     async translateWithGoogle() {
@@ -203,7 +218,7 @@ export default {
           temperature: 0
         });
 
-        this.setValue(stream.choices[0]?.message?.content || '')
+        this.setValue(stream.choices[0]?.message?.content || '');
 
       } catch (error) {
         console.log(error);

@@ -2,6 +2,7 @@
 
 namespace Level51\Autotranslate;
 
+use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
 use SilverStripe\CMS\Model\SiteTree;
@@ -229,6 +230,8 @@ class AutotranslateFieldExtension extends Extension
                 $record = SiteTree::get()->byID($idField->Value());
             }
         } elseif ($form->getController() instanceof GridFieldDetailForm_ItemRequest) {
+            $record = $form->getRecord();
+        } elseif ($form->getController() instanceof LeftAndMain) {
             $record = $form->getRecord();
         }
 
