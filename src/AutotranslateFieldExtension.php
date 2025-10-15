@@ -227,7 +227,7 @@ class AutotranslateFieldExtension extends Extension
 
         if (get_class($form->getController()) === CMSPageEditController::class) {
             if ($idField = $form->Fields()->fieldByName('ID')) {
-                $record = SiteTree::get()->byID($idField->Value());
+                $record = SiteTree::get()->byID($idField->getValue());
             }
         } elseif ($form->getController() instanceof GridFieldDetailForm_ItemRequest) {
             $record = $form->getRecord();

@@ -20,10 +20,10 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": "^8.3",
     "ext-json": "*",
     "ext-intl": "*",
-    "silverstripe/framework": "^4 || ^5"
+    "silverstripe/framework": "^6.0"
   },
   "extra": {
     "installer-name": "silverstripe-fluent-autotranslate",
