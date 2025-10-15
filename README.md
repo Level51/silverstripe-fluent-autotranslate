@@ -1,5 +1,7 @@
 # Silverstripe Fluent Autotranslate
-Module for auto translation using Google Cloud Translation for Silverstripe with Fluent.
+Module for auto translation using Google Cloud Translation for Silverstripe 6 with Fluent.
+
+Check out Version 0.x for Silverstripe 4|5 support.
 
 ## Content
 - [Requirements](#requirements)
@@ -10,9 +12,9 @@ Module for auto translation using Google Cloud Translation for Silverstripe with
 - [Disable extension for specific field types](#disable-extension-for-specific-field-types)
 
 ## Requirements
-- [Silverstripe](https://github.com/silverstripe/silverstripe-framework) ^4 || ^5
-- [Fluent](https://github.com/tractorcow-farm/silverstripe-fluent) >=4
-- PHP >= 7.1
+- [Silverstripe](https://github.com/silverstripe/silverstripe-framework) ^6
+- [Fluent](https://github.com/tractorcow-farm/silverstripe-fluent) >=8
+- PHP ^8.3
 - ext-json
 
 ## Installation
