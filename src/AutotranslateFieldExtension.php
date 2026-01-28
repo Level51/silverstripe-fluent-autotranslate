@@ -255,7 +255,7 @@ class AutotranslateFieldExtension extends Extension
                     function ($state) use ($context, $record, &$sourceValue) {
                         $state->setLocale($this->getAutotranslateSourceLocale()->Locale);
                         $sourceRecord = DataObject::get(get_class($record))->byID($record->ID);
-                        $sourceValue = $sourceRecord->{$context->owner->Name};
+                        $sourceValue = $sourceRecord->{$context->owner->Name} ?? null;
                     }
                 );
 
